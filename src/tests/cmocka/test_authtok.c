@@ -126,6 +126,18 @@ static void test_sss_authtok_password(void **state)
     assert_int_equal(ret, EOK);
     assert_string_equal(data, pwd);
     assert_int_equal(len - 1, ret_len);
+
+    ret = sss_authtok_set(ts->authtoken, type, "\0", 0);
+ 
+    assert_int_equal(ret, EINVAL);
+ 
+    ret = sss_authtok_set(ts->authtoken, type, NULL, 0);
+ 
+    assert_int_equal(ret, EINVAL);
+
+    ret = sss_authtok_set(NULL, type, data, len);
+ 
+    assert_int_equal(ret, EINVAL);
 }
 
 /* Test when type has value SSS_AUTHTOK_TYPE_CCFILE */
@@ -179,6 +191,18 @@ static void test_sss_authtok_ccfile(void **state)
     assert_int_equal(ret, EOK);
     assert_string_equal(data, pwd);
     assert_int_equal(len - 1, ret_len);
+
+    ret = sss_authtok_set(ts->authtoken, type, "\0", 0);
+ 
+    assert_int_equal(ret, EINVAL);
+ 
+    ret = sss_authtok_set(ts->authtoken, type, NULL, 0);
+ 
+    assert_int_equal(ret, EINVAL);
+
+    ret = sss_authtok_set(NULL, type, data, len);
+ 
+    assert_int_equal(ret, EINVAL);
 }
 
 /* Test when type has value SSS_AUTHTOK_TYPE_EMPTY */
@@ -214,8 +238,8 @@ static void test_sss_authtok_empty(void **state)
     assert_null(sss_authtok_get_data(ts->authtoken));
  
     ret = sss_authtok_set(ts->authtoken, type, '\0', 0);
+ 
     assert_int_equal(ret, EOK);
-
     assert_int_equal(type, sss_authtok_get_type(ts->authtoken));
     assert_int_equal(0, sss_authtok_get_size(ts->authtoken));
     assert_null(sss_authtok_get_data(ts->authtoken));
@@ -227,6 +251,10 @@ static void test_sss_authtok_empty(void **state)
     ret = sss_authtok_get_ccfile(ts->authtoken, pwd, ret_len);
 
     assert_int_equal(ret, ENOENT);
+
+    ret = sss_authtok_set(NULL, type, NULL, 0);
+ 
+    assert_int_equal(ret, EOK);
 }
 
 static void test_sss_authtok_wipe_password(void **state)
